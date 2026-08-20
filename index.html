@@ -1,0 +1,1375 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>블리비 홍대점 스마트업무</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        "Noto Sans KR",
+        Arial,
+        sans-serif;
+      color: #202124;
+      background: #f5f6f8;
+    }
+
+    body {
+      overflow: hidden;
+    }
+
+    button {
+      font-family: inherit;
+    }
+
+
+    /* ========================================
+       전체 레이아웃
+    ======================================== */
+
+    .app {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      overflow: hidden;
+    }
+
+
+    /* ========================================
+       LEFT SIDEBAR
+    ======================================== */
+
+    .sidebar {
+      width: 230px;
+      height: 100vh;
+      flex-shrink: 0;
+
+      background: #ffffff;
+      border-right: 1px solid #e5e7eb;
+
+      display: flex;
+      flex-direction: column;
+
+      overflow-y: auto;
+      z-index: 100;
+    }
+
+
+    /* 로고 / 제목 */
+
+    .sidebar-header {
+      padding: 26px 22px 22px;
+      border-bottom: 1px solid #f0f1f3;
+    }
+
+    .logo-mark {
+      width: 100px;
+      height: 30x;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 10px;
+
+      margin-bottom: 14px;
+      overflow: hidden;
+    }
+
+    .logo-mark img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .sidebar-title {
+      margin: 0;
+
+      font-size: 17px;
+      font-weight: 700;
+
+      letter-spacing: -0.6px;
+    }
+
+    .sidebar-subtitle {
+      margin: 6px 0 0;
+
+      color: #cfd3da;
+
+      font-size: 11px;
+      line-height: 1.5;
+
+      letter-spacing: -0.2px;
+    }
+
+
+    /* ========================================
+       메뉴 영역
+    ======================================== */
+
+    .menu-area {
+      padding: 18px 12px 30px;
+    }
+
+    .menu-section {
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #d1cecf;
+    }
+
+    .menu-section-title {
+      padding: 0 10px;
+      margin-bottom: 10px;
+
+      color: #554f53;
+
+      font-size: 15px;
+      font-weight: 700;
+
+      letter-spacing: 0.5px;
+
+      background: hwb(333 91% 0%);
+      padding: 6px 10px;
+      border-radius: 6px;
+    }
+
+    /* Hide small inline icons and WEB/SHEET badges */
+    .menu-icon,
+    .menu-type,
+    .current-icon,
+    .welcome-icon {
+      display: none !important;
+    }
+
+    .menu-section:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+
+    /* 메뉴 버튼 */
+
+    .menu-button {
+      width: 100%;
+
+      border: 0;
+      background: transparent;
+
+      padding: 10px 11px;
+
+      border-radius: 8px;
+
+      display: flex;
+      align-items: center;
+
+      text-align: left;
+
+      color: #5f6368;
+
+      cursor: pointer;
+
+      transition:
+        background 0.15s ease,
+        color 0.15s ease;
+    }
+
+    .menu-button:hover {
+      background: #f5f6f8;
+      color: #202124;
+    }
+
+    .menu-button.active {
+      background: #eef1f5;
+      color: #202124;
+      font-weight: 600;
+    }
+
+    .menu-icon {
+      width: 27px;
+      flex-shrink: 0;
+
+      font-size: 15px;
+      text-align: center;
+
+      margin-right: 7px;
+    }
+
+    .menu-name {
+      flex: 1;
+
+      font-size: 15px;
+      line-height: 1.4;
+
+      letter-spacing: -0.3px;
+    }
+
+    .menu-arrow {
+      color: #b0b4ba;
+      font-size: 15px;
+
+      opacity: 0;
+
+      transform: translateX(-3px);
+
+      transition:
+        opacity 0.15s ease,
+        transform 0.15s ease;
+    }
+
+    .menu-button:hover .menu-arrow,
+    .menu-button.active .menu-arrow {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+
+    /* WEB / SHEET 표시 */
+
+    .menu-type {
+      margin-left: 5px;
+
+      padding: 2px 5px;
+
+      border-radius: 4px;
+
+      background: #f1f2f4;
+
+      color: #9a9ea5;
+
+      font-size: 8px;
+      font-weight: 600;
+
+      line-height: 1.2;
+    }
+
+
+    /* ========================================
+       RIGHT CONTENT
+    ======================================== */
+
+    .content {
+      flex: 1;
+      min-width: 0;
+      height: 100vh;
+
+      display: flex;
+      flex-direction: column;
+
+      background: #f5f6f8;
+    }
+
+
+    /* ========================================
+       상단 바
+    ======================================== */
+
+    .topbar {
+      height: 50px;
+      flex-shrink: 0;
+
+      background: #ffffff;
+      border-bottom: 1px solid #e5e7eb;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      padding: 0 22px;
+    }
+
+    .current-page {
+      display: none;
+    }
+
+    .current-icon {
+      width: 34px;
+      height: 34px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      background: #f4f5f7;
+      border-radius: 8px;
+
+      margin-right: 10px;
+
+      font-size: 25px;
+    }
+
+    .current-info {
+      min-width: 0;
+    }
+
+    .current-category {
+      color: #9a9ea5;
+
+      font-size: 9px;
+      font-weight: 600;
+
+      margin-bottom: 2px;
+    }
+
+    .current-title {
+      margin: 0;
+
+      font-size: 13px;
+      font-weight: 700;
+
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .open-new-button {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+
+      padding: 7px 11px;
+
+      border: 1px solid #e0e2e5;
+      border-radius: 7px;
+
+      background: #ffffff;
+
+      color: #555a61;
+
+      font-size: 11px;
+      font-weight: 600;
+
+      cursor: pointer;
+    }
+
+    .open-new-button:hover {
+      background: #f6f7f8;
+    }
+
+
+    /* ========================================
+       IFRAME AREA
+    ======================================== */
+
+    .workspace {
+      flex: 1;
+      min-height: 0;
+
+      padding: 14px;
+
+      position: relative;
+    }
+
+    .iframe-container {
+      width: 100%;
+      height: 100%;
+
+      background: #ffffff;
+
+      border: 1px solid #e1e3e6;
+      border-radius: 10px;
+
+      overflow: hidden;
+
+      box-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.025);
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+
+      border: 0;
+
+      display: none;
+
+      background: #ffffff;
+    }
+
+    iframe.show {
+      display: block;
+    }
+
+
+    /* ========================================
+       처음 화면 안내
+    ======================================== */
+
+    .welcome {
+      width: 100%;
+      height: 100%;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      background: #ffffff;
+    }
+
+    .welcome-inner {
+      text-align: center;
+
+      max-width: 430px;
+
+      padding: 30px;
+    }
+
+    .welcome-icon {
+      width: 58px;
+      height: 58px;
+
+      margin: 0 auto 18px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      background: #f1f3f5;
+
+      border-radius: 15px;
+
+      font-size: 25px;
+    }
+
+    .welcome h2 {
+      margin: 0;
+
+      font-size: 20px;
+      font-weight: 700;
+
+      letter-spacing: -0.7px;
+    }
+
+    .welcome p {
+      margin: 10px 0 0;
+
+      color: #8a8f98;
+
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .welcome-guide {
+      margin-top: 22px;
+
+      padding: 13px 16px;
+
+      background: #f7f8f9;
+
+      border-radius: 8px;
+
+      color: #777c83;
+
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+
+    /* ========================================
+       로딩
+    ======================================== */
+
+    .loading {
+      position: absolute;
+
+      top: 50%;
+      left: 50%;
+
+      transform: translate(-50%, -50%);
+
+      display: none;
+
+      text-align: center;
+
+      color: #8a8f98;
+
+      font-size: 12px;
+
+      z-index: 10;
+    }
+
+    .loading.show {
+      display: block;
+    }
+
+    .loading-circle {
+      width: 26px;
+      height: 26px;
+
+      margin: 0 auto 10px;
+
+      border: 3px solid #e5e7eb;
+      border-top-color: #777;
+
+      border-radius: 50%;
+
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+
+    /* ========================================
+       MOBILE
+    ======================================== */
+
+    @media (max-width: 700px) {
+
+      body {
+        overflow: auto;
+      }
+
+      .app {
+        height: auto;
+        min-height: 100vh;
+
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        height: auto;
+
+        border-right: 0;
+        border-bottom: 1px solid #e5e7eb;
+
+        overflow: visible;
+      }
+
+      .sidebar-header {
+        padding: 18px;
+      }
+
+      .logo-mark {
+        width: 34px;
+        height: 34px;
+
+        margin-bottom: 10px;
+      }
+
+      .menu-area {
+        padding: 10px 10px 14px;
+
+        display: flex;
+        gap: 8px;
+
+        overflow-x: auto;
+      }
+
+      .menu-section {
+        flex-shrink: 0;
+
+        margin: 0;
+
+        display: flex;
+        gap: 5px;
+      }
+
+      .menu-section-title {
+        display: none;
+      }
+
+      .menu-button {
+        width: auto;
+
+        white-space: nowrap;
+
+        background: #f6f7f8;
+      }
+
+      .menu-button.active {
+        background: #e9ebee;
+      }
+
+      .menu-arrow,
+      .menu-type {
+        display: none;
+      }
+
+      .content {
+        height: calc(100vh - 150px);
+        min-height: 600px;
+      }
+
+      .topbar {
+        padding: 0 14px;
+      }
+
+      .workspace {
+        padding: 8px;
+      }
+
+      .open-new-button {
+        font-size: 10px;
+      }
+    }
+
+  </style>
+</head>
+
+
+<body>
+
+
+<div class="app">
+
+
+  <!-- ==================================================
+       LEFT SIDEBAR
+  ================================================== -->
+
+  <aside class="sidebar">
+
+
+    <!-- 로고 -->
+
+    <div class="sidebar-header">
+
+      <div class="logo-mark">
+        <img src="logo.png" alt="홍대점 스마트업무 로고">
+      </div>
+
+      <h1 class="sidebar-title">
+        블리비 홍대점
+      </h1>
+
+      
+
+    </div>
+
+
+    <!-- 메뉴 -->
+
+    <nav class="menu-area">
+
+
+      <!-- ==========================================
+           고객응대 / 차팅
+      =========================================== -->
+
+      <div class="menu-section">
+
+        <div class="menu-section-title">
+          고객응대 / 상담
+        </div>
+
+
+        <!-- 01 -->
+
+        <button
+          class="menu-button"
+          data-name="시술별 금액정리"
+          data-category="고객응대 / 상담"
+  
+          data-url="https://teletobin.github.io/treatment.price.hongdae/"
+          onclick="openTool(this)"
+        >
+
+         
+
+          <span class="menu-name">
+            01/ 시술별 금액정리
+          </span>
+
+          <span class="menu-type">
+            WEB
+          </span>
+
+          <span class="menu-arrow">
+            →
+          </span>
+
+        </button>
+
+
+        <!-- 02 -->
+
+        <button
+          class="menu-button"
+          data-name="고객안내용 차트정리"
+          data-category="고객응대 / 상담"
+          data-icon="₩"
+          data-url="https://teletobin.github.io/chart-for-client/"
+          onclick="openTool(this)"
+        >
+
+          
+
+          <span class="menu-name">
+            02/ 고객안내용 차트수정
+          </span>
+
+          <span class="menu-type">
+            WEB
+          </span>
+
+          <span class="menu-arrow">
+            →
+          </span>
+
+        </button>
+
+
+        <!-- 03 -->
+
+        <button
+          class="menu-button"
+          data-name="빠른 차감"
+          data-category="고객응대 / 상담"
+          data-icon="📋"
+          data-url="https://teletobin.github.io/treatment-chart/"
+          onclick="openTool(this)"
+        >
+
+        
+
+          <span class="menu-name">
+            03/ 빠른차감 및 금액계산
+          </span>
+
+          <span class="menu-type">
+            WEB
+          </span>
+
+          <span class="menu-arrow">
+            →
+          </span>
+
+        </button>
+        <button
+          class="menu-button"
+          data-name="사용내역 문자"
+          data-category="고객응대 / 상담"
+          data-icon="📋"
+          data-url="https://teletobin.github.io/membership/"
+          onclick="openTool(this)"
+        >
+
+              <span class="menu-name">
+            04/ 내역문자발송
+          </span>
+
+          <span class="menu-type">
+            WEB
+          </span>
+
+          <span class="menu-arrow">
+            →
+          </span>
+
+        </button>
+
+
+      </div>
+
+
+
+      <!-- ==========================================
+           수납 / 매출
+      =========================================== -->
+
+      <div class="menu-section">
+
+        <div class="menu-section-title">
+          수납 / 매출
+        </div>
+
+
+        <!-- 04 -->
+
+        <button
+          class="menu-button"
+          data-name="일일수납&업체결제"
+          data-category="수납 / 매출"
+          data-icon="💰"
+          data-url="https://docs.google.com/spreadsheets/d/1rtWPmwSC4U8ynFSI3b0O535RSv0OI1sxBXrImtn59O4/edit?gid=0#gid=0"
+          onclick="openTool(this)"
+        >
+
+        
+          <span class="menu-name">
+            01/ 일일수납 & 업체결제
+          </span>
+
+          <span class="menu-type">
+            SHEET
+          </span>
+
+          <span class="menu-arrow">
+            →
+          </span>
+
+        </button>
+
+
+        <!-- 05 -->
+
+        <button
+          class="menu-button"
+          data-name="웨이브 예약 매출"
+          data-category="수납 / 매출"
+          data-icon="📊"
+          data-url="https://docs.google.com/spreadsheets/d/1rMRlFPgxn48FC688Rhibabt9j3dn44FCSZV69kaspt0/edit?gid=1818077142#gid=1818077142"
+          onclick="openTool(this)"
+        >
+
+          
+          <span class="menu-name">
+            02/ 웨이브 매출
+          </span>
+
+          <span class="menu-type">
+            SHEET
+          </span>
+
+          <span class="menu-arrow">
+            →
+          </span>
+
+        </button>
+
+         <button
+          class="menu-button"
+          data-name="카드사 무이자할부"
+          data-category="수납 / 매출"
+          data-icon="📊"
+          data-url="https://docs.google.com/spreadsheets/d/1rMRlFPgxn48FC688Rhibabt9j3dn44FCSZV69kaspt0/edit?gid=1818077142#gid=1818077142"
+          onclick="openTool(this)"
+        >
+
+          
+          <span class="menu-name">
+            03/ 가맹점 무이자 할부 
+          </span>
+
+          <span class="menu-type">
+            SHEET
+          </span>
+
+          <span class="menu-arrow">
+            →
+          </span>
+
+        </button>
+
+
+      </div>
+
+
+
+      <!-- ==========================================
+           직원관리
+      =========================================== -->
+
+      <div class="menu-section">
+
+        <div class="menu-section-title">
+          근무관리
+        </div>
+
+
+        <!-- 06 -->
+
+        <button
+          class="menu-button"
+          data-name="직원 공유 캘린더"
+          data-category="직원관리"
+          data-icon="📅"
+          data-url="https://docs.google.com/spreadsheets/d/1NWMLngElhn9PfZsHB3opJ9LIrbOUhNzfDF8ZZdjSsZk/edit?gid=963910414#gid=963910414"
+          onclick="openTool(this)"
+        >
+
+       
+
+          <span class="menu-name">
+            01/ 공유캘린더
+          </span>
+
+          <span class="menu-type">
+            SHEET
+          </span>
+
+          <span class="menu-arrow">
+            →
+          </span>
+
+        </button>
+
+
+        <!-- 07 -->
+
+        <button
+          class="menu-button"
+          data-name=통합OT"
+          data-category="직원관리"
+          data-icon="⏰"
+          data-url="https://docs.google.com/spreadsheets/d/13I1oJ0GbEAWp9jlwQUQ5TWVfd1qSAikGxQBTCm-KOLI/edit?gid=901889457#gid=901889457"
+          onclick="openTool(this)"
+        >
+
+       
+          <span class="menu-name">
+            02/ 전직원 OT
+          </span>
+
+          <span class="menu-type">
+            SHEET
+          </span>
+
+          <span class="menu-arrow">
+            →
+          </span>
+
+        </button>
+
+
+        <!-- 08 -->
+
+        <button
+          class="menu-button"
+          data-name="점심 OT"
+          data-category="직원관리"
+          data-icon="🍱"
+          data-url="https://docs.google.com/spreadsheets/d/1dJTeBIPXNSLBQh_bdWTuSi-Xlzkpc5NApVTb_S3VG90/edit?gid=661330425#gid=661330425"
+          onclick="openTool(this)"
+        >
+
+          
+
+          <span class="menu-name">
+            03/ 점심OT&무급
+          </span>
+
+          <span class="menu-type">
+            SHEET
+          </span>
+
+          <span class="menu-arrow">
+            →
+          </span>
+
+        </button>
+
+
+        <!-- 10 -->
+
+        <button
+          class="menu-button"
+          data-name="연차 관리"
+          data-category="직원관리"
+          data-icon="🏖️"
+          data-url="https://docs.google.com/spreadsheets/d/13M3B5DawfmxP5AAxz2RjCWnDbB0eCV24v5McVsrU8qo/edit?gid=328376041#gid=328376041"
+          onclick="openTool(this)"
+        >
+
+
+          <span class="menu-name">
+            04/ 연차 관리
+          </span>
+
+          <span class="menu-type">
+            SHEET
+          </span>
+
+          <span class="menu-arrow">
+            →
+          </span>
+
+        </button>
+
+
+      </div>
+
+
+
+      <!-- ==========================================
+           기타 업무도구
+      =========================================== -->
+
+      <div class="menu-section">
+
+       
+
+          
+
+          
+
+          <span class="menu-arrow">
+            →
+          </span>
+
+        </button>
+
+
+      </div>
+
+
+    </nav>
+
+  </aside>
+
+
+
+  <!-- ==================================================
+       RIGHT CONTENT
+  ================================================== -->
+
+  <main class="content">
+
+
+    <!-- 상단 바 -->
+
+    <header class="topbar">
+
+
+      <div class="current-page">
+
+        <div
+          class="current-icon"
+          id="currentIcon"
+        >
+        </div>
+
+
+        <div class="current-info">
+
+          <div
+            class="current-category"
+            id="currentCategory"
+          >
+            블리비 홍대점
+          </div>
+
+          <h2
+            class="current-title"
+            id="currentTitle"
+          >
+            메뉴를 선택해주세요
+          </h2>
+
+        </div>
+
+      </div>
+
+
+
+      <div class="topbar-actions">
+
+        <button
+          class="open-new-button"
+          id="openNewButton"
+          onclick="openInNewWindow()"
+          style="display: none;"
+        >
+          ↗ 새 창에서 열기
+        </button>
+
+      </div>
+
+
+    </header>
+
+
+
+    <!-- 작업 영역 -->
+
+    <section class="workspace">
+
+
+      <div class="iframe-container">
+
+
+        <!-- 처음 보여주는 화면 -->
+
+        <div
+          class="welcome"
+          id="welcome"
+        >
+
+          <div class="welcome-inner">
+
+            <div class="welcome-icon">
+            </div>
+
+            <h2>
+              블리비홍대점 스마트 업무관리
+            </h2>
+
+            <p>
+              왼쪽 메뉴에서 필요한 메뉴를 선택하세요<br>
+                          </p>
+
+           
+
+          </div>
+
+        </div>
+
+
+        <!-- 실제 사이트가 표시되는 영역 -->
+
+        <iframe
+          id="toolFrame"
+          title="업무도구"
+          allow="clipboard-read; clipboard-write"
+        ></iframe>
+
+
+      </div>
+
+
+      <!-- 로딩 -->
+
+      <div
+        class="loading"
+        id="loading"
+      >
+
+        <div class="loading-circle"></div>
+
+        업무도구를 불러오는 중입니다...
+
+      </div>
+
+
+    </section>
+
+
+  </main>
+
+
+</div>
+
+
+
+<script>
+
+  /* ==================================================
+     현재 선택된 URL 저장
+  ================================================== */
+
+  let currentUrl = "";
+
+
+
+  /* ==================================================
+     업무도구 열기
+  ================================================== */
+
+  function openTool(button) {
+
+
+    /* 모든 메뉴의 active 제거 */
+
+    document
+      .querySelectorAll(".menu-button")
+      .forEach(function(item) {
+
+        item.classList.remove("active");
+
+      });
+
+
+    /* 현재 메뉴 active */
+
+    button.classList.add("active");
+
+
+    /* 데이터 가져오기 */
+
+    const name =
+      button.getAttribute("data-name");
+
+    const category =
+      button.getAttribute("data-category");
+
+    const icon =
+      button.getAttribute("data-icon");
+
+    const url =
+      button.getAttribute("data-url");
+
+
+    /* 현재 페이지 정보 변경 */
+
+    document.getElementById("currentTitle").textContent =
+      name;
+
+    document.getElementById("currentCategory").textContent =
+      category;
+
+    /* icons removed from UI */
+    document.getElementById("currentIcon").textContent = "";
+
+
+    /* 현재 URL 저장 */
+
+    currentUrl = url;
+
+
+    /* 새 창 버튼 표시 */
+
+    document.getElementById("openNewButton").style.display =
+      "flex";
+
+
+    /* 안내 화면 숨기기 */
+
+    document.getElementById("welcome").style.display =
+      "none";
+
+
+    /* LINK_01 같은 임시 주소인지 확인 */
+
+    if (
+      !url ||
+      url.startsWith("LINK_")
+    ) {
+
+      /* 아직 URL을 넣지 않았다면 */
+
+      document.getElementById("welcome").style.display =
+        "flex";
+
+      document.getElementById("toolFrame").classList.remove("show");
+
+      document.getElementById("welcome").innerHTML = `
+
+        <div class="welcome-inner">
+
+          <div class="welcome-icon">
+            🔗
+          </div>
+
+          <h2>
+            ${name}
+          </h2>
+
+          <p>
+            아직 연결된 주소가 없습니다.
+          </p>
+
+          <div class="welcome-guide">
+
+            index.html 코드에서<br>
+            <strong>${url}</strong><br>
+            부분을 실제 사이트 주소로 변경해주세요.
+
+          </div>
+
+        </div>
+
+      `;
+
+      return;
+
+    }
+
+
+    /* 로딩 표시 */
+
+    document
+      .getElementById("loading")
+      .classList.add("show");
+
+
+    /* iframe */
+
+    const frame =
+      document.getElementById("toolFrame");
+
+
+    frame.classList.remove("show");
+
+
+    /* 기존 iframe 주소 변경 */
+
+    frame.src = url;
+
+
+    /* iframe 로딩 완료 */
+
+    frame.onload = function() {
+
+      document
+        .getElementById("loading")
+        .classList.remove("show");
+
+      document
+        .getElementById("welcome")
+        .style.display = "none";
+
+      frame.classList.add("show");
+
+    };
+
+  }
+
+
+
+  /* ==================================================
+     새 창에서 열기
+  ================================================== */
+
+  function openInNewWindow() {
+
+    if (
+      currentUrl &&
+      !currentUrl.startsWith("LINK_")
+    ) {
+
+      window.open(
+        currentUrl,
+        "_blank"
+      );
+
+    }
+
+  }
+
+
+
+  /* ==================================================
+     페이지 처음 로딩
+  ================================================== */
+
+  window.addEventListener(
+    "load",
+    function() {
+
+      console.log(
+        "블리비홍대점 스마트업무가 정상적으로 로드되었습니다."
+      );
+
+    }
+  );
+
+</script>
+
+
+</body>
+</html>
