@@ -1423,31 +1423,32 @@
   /* ==================================================
      비밀번호 확인 처리
   ================================================== */
-
   function submitPassword() {
 
-    const input =
-      document.getElementById("pwInput").value;
+  const input =
+    document.getElementById("pwInput").value;
 
-    const correctPassword =
-      pendingButton.getAttribute("data-password");
+  const correctPassword =
+    pendingButton.getAttribute("data-password");
 
-    if (input === correctPassword) {
+  if (input === correctPassword) {
 
-      closePasswordModal();
-      proceedOpenTool(pendingButton);
+    const targetButton = pendingButton; // 먼저 저장해두기
 
-    } else {
+    closePasswordModal();
+    proceedOpenTool(targetButton); // null이 아닌 저장된 버튼 사용
 
-      document.getElementById("pwError").textContent =
-        "비밀번호가 올바르지 않습니다.";
+  } else {
 
-      document.getElementById("pwInput").value = "";
-      document.getElementById("pwInput").focus();
+    document.getElementById("pwError").textContent =
+      "비밀번호가 올바르지 않습니다.";
 
-    }
+    document.getElementById("pwInput").value = "";
+    document.getElementById("pwInput").focus();
 
   }
+
+}
 
 
   function closePasswordModal() {
