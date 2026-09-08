@@ -534,6 +534,125 @@
 
 
     /* ========================================
+       비밀번호 모달 (신규 추가)
+    ======================================== */
+
+    .pw-modal-overlay {
+      position: fixed;
+      inset: 0;
+
+      background: rgba(20, 22, 26, 0.45);
+
+      display: none;
+      align-items: center;
+      justify-content: center;
+
+      z-index: 1000;
+    }
+
+    .pw-modal-overlay.show {
+      display: flex;
+    }
+
+    .pw-modal {
+      width: 300px;
+
+      background: #ffffff;
+      border-radius: 14px;
+
+      padding: 26px 24px 22px;
+
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+
+      text-align: center;
+    }
+
+    .pw-modal h3 {
+      margin: 0 0 6px;
+
+      font-size: 15px;
+      font-weight: 700;
+
+      letter-spacing: -0.4px;
+    }
+
+    .pw-modal p {
+      margin: 0 0 16px;
+
+      color: #8a8f98;
+
+      font-size: 11.5px;
+      line-height: 1.5;
+    }
+
+    .pw-modal input {
+      width: 100%;
+
+      padding: 10px 12px;
+
+      border: 1px solid #e0e2e5;
+      border-radius: 8px;
+
+      font-size: 14px;
+
+      margin-bottom: 8px;
+
+      outline: none;
+    }
+
+    .pw-modal input:focus {
+      border-color: #b7bcc4;
+    }
+
+    .pw-error {
+      color: #e0483f;
+
+      font-size: 11px;
+
+      min-height: 15px;
+
+      margin-bottom: 8px;
+    }
+
+    .pw-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .pw-actions button {
+      flex: 1;
+
+      padding: 9px 0;
+
+      border: 0;
+      border-radius: 8px;
+
+      font-size: 12.5px;
+      font-weight: 600;
+
+      cursor: pointer;
+    }
+
+    .pw-confirm {
+      background: #202124;
+      color: #ffffff;
+    }
+
+    .pw-confirm:hover {
+      background: #35373a;
+    }
+
+    .pw-cancel {
+      background: #f1f2f4;
+      color: #5f6368;
+    }
+
+    .pw-cancel:hover {
+      background: #e7e9eb;
+    }
+
+
+    /* ========================================
        MOBILE
     ======================================== */
 
@@ -799,7 +918,7 @@
         </div>
 
 
-        <!-- 04 -->
+        <!-- 04 : 비밀번호 보호 적용 -->
 
         <button
           class="menu-button"
@@ -807,6 +926,8 @@
           data-category="수납 / 매출"
           data-icon="💰"
           data-url="https://docs.google.com/spreadsheets/d/1rtWPmwSC4U8ynFSI3b0O535RSv0OI1sxBXrImtn59O4/edit?gid=0#gid=0"
+          data-protected="true"
+          data-password="1814"
           onclick="openTool(this)"
         >
 
@@ -1215,6 +1336,37 @@
 </div>
 
 
+<!-- ==================================================
+     비밀번호 확인 모달 (신규 추가)
+================================================== -->
+
+<div class="pw-modal-overlay" id="pwModalOverlay">
+
+  <div class="pw-modal">
+
+    <h3 id="pwModalTitle">비밀번호 확인</h3>
+    <p>비밀번호 입력 후 열람할 수 있습니다.</p>
+
+    <input
+      type="password"
+      id="pwInput"
+      placeholder="비밀번호 입력"
+      autocomplete="off"
+    >
+
+    <div class="pw-error" id="pwError"></div>
+
+    <div class="pw-actions">
+
+      <button class="pw-cancel" onclick="closePasswordModal()">취소</button>
+      <button class="pw-confirm" onclick="submitPassword()">확인</button>
+
+    </div>
+
+  </div>
+
+</div>
+
 
 <script>
 
@@ -1224,13 +1376,117 @@
 
   let currentUrl = "";
 
+  /* 비밀번호 확인 대기 중인 버튼 */
+  let pendingButton = null;
+
 
 
   /* ==================================================
-     업무도구 열기
+     업무도구 열기 (진입점)
   ================================================== */
 
   function openTool(button) {
+
+    const isProtected =
+      button.getAttribute("data-protected") === "true";
+
+    if (isProtected) {
+
+      /* 비밀번호 모달 띄우기 */
+
+      pendingButton = button;
+
+      document.getElementById("pwModalTitle").textContent =
+        button.getAttribute("data-name") + " - 비밀번호 확인";
+
+      document.getElementById("pwInput").value = "";
+      document.getElementById("pwError").textContent = "";
+
+      document.getElementById("pwModalOverlay").classList.add("show");
+
+      setTimeout(function() {
+        document.getElementById("pwInput").focus();
+      }, 50);
+
+      return;
+
+    }
+
+    /* 보호되지 않은 메뉴는 바로 실행 */
+
+    proceedOpenTool(button);
+
+  }
+
+
+
+  /* ==================================================
+     비밀번호 확인 처리
+  ================================================== */
+
+  function submitPassword() {
+
+    const input =
+      document.getElementById("pwInput").value;
+
+    const correctPassword =
+      pendingButton.getAttribute("data-password");
+
+    if (input === correctPassword) {
+
+      closePasswordModal();
+      proceedOpenTool(pendingButton);
+
+    } else {
+
+      document.getElementById("pwError").textContent =
+        "비밀번호가 올바르지 않습니다.";
+
+      document.getElementById("pwInput").value = "";
+      document.getElementById("pwInput").focus();
+
+    }
+
+  }
+
+
+  function closePasswordModal() {
+
+    document.getElementById("pwModalOverlay").classList.remove("show");
+    pendingButton = null;
+
+  }
+
+
+  /* 엔터키로도 확인 가능하도록 */
+
+  document.addEventListener("DOMContentLoaded", function() {
+
+    document.getElementById("pwInput").addEventListener("keydown", function(e) {
+
+      if (e.key === "Enter") {
+        submitPassword();
+      }
+
+    });
+
+    document.getElementById("pwModalOverlay").addEventListener("click", function(e) {
+
+      if (e.target === this) {
+        closePasswordModal();
+      }
+
+    });
+
+  });
+
+
+
+  /* ==================================================
+     실제 업무도구 열기 로직 (기존 openTool 로직)
+  ================================================== */
+
+  function proceedOpenTool(button) {
 
 
     /* 모든 메뉴의 active 제거 */
@@ -1412,7 +1668,7 @@
     function() {
 
       console.log(
-        "블리비홍대점 스마트업무가 정상적으로 로드되었습니다."
+        "업무센터가 정상적으로 로드되었습니다."
       );
 
     }
