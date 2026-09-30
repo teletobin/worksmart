@@ -53,7 +53,7 @@
     ======================================== */
 
     .sidebar {
-      width: 230px;
+      width: 200px;
       height: 100vh;
       flex-shrink: 0;
 
@@ -71,7 +71,7 @@
     /* 로고 / 제목 */
 
     .sidebar-header {
-      padding: 26px 22px 22px;
+      padding: 16px 12px 12px;
       border-bottom: 1px solid #f0f1f3;
     }
 
@@ -85,7 +85,7 @@
 
       border-radius: 10px;
 
-      margin-bottom: 14px;
+      margin-bottom: 10px;
       overflow: hidden;
     }
 
@@ -122,18 +122,18 @@
     ======================================== */
 
     .menu-area {
-      padding: 18px 12px 30px;
+      padding: 12px 8px 20px;
     }
 
     .menu-section {
-      margin-bottom: 24px;
-      padding-bottom: 12px;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
       border-bottom: 1px solid #d1cecf;
     }
 
     .menu-section-title {
-      padding: 0 10px;
-      margin-bottom: 10px;
+      padding: 0 8px;
+      margin-bottom: 8px;
 
       color: #554f53;
 
@@ -143,13 +143,14 @@
       letter-spacing: 0.5px;
 
       background: hwb(333 91% 0%);
-      padding: 6px 10px;
+      padding: 6px 8px;
       border-radius: 6px;
     }
 
     /* Hide small inline icons and WEB/SHEET badges */
     .menu-icon,
     .menu-type,
+    .menu-arrow,
     .current-icon,
     .welcome-icon {
       display: none !important;
@@ -170,7 +171,7 @@
       border: 0;
       background: transparent;
 
-      padding: 10px 11px;
+      padding: 8px 8px;
 
       border-radius: 8px;
 
@@ -216,6 +217,10 @@
       line-height: 1.4;
 
       letter-spacing: -0.3px;
+
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .menu-arrow {
